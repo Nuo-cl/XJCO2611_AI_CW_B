@@ -1,6 +1,10 @@
 from bbSearch import SearchProblem, search
 from copy import deepcopy
+import json
 
+items = json.load(open("./config.json"))["items"]
+ITEM_WEIGHT = [i["weight"] for i in items]
+ITEM_NAME = [i["name"] for i in items]
 
 class Robot:
     def __init__(self, location, carried_items, strength):
@@ -14,7 +18,7 @@ class Robot:
     ## Define unique string representation for the state of the robot object
     def __repr__(self):
         return str( ( self.location,
-                      self.carried_items,
+                      ", ".join(ITEM_NAME[i] for i in self.carried_items ),
                       self.strength ) )
 
 
@@ -28,7 +32,7 @@ class Door:
 
     ## Define a unique string representation for a door object
     def __repr__(self):
-        return str( ("door", self.goes_between, self.doorkey, self.locked) )
+        return str( ("door", self.goes_between, ITEM_NAME[self.doorkey] if self.doorkey != None else None, self.locked) )
     
 
 class State:
@@ -43,7 +47,8 @@ class State:
     def __repr__(self):
         return str( ( self.robot.__repr__(),
                       [d.__repr__() for d in self.doors],
-                      self.room_contents ) )
+                    dict(zip(self.room_contents.keys(), [("None" if len(self.room_contents[rk])==0 else {ITEM_NAME[v] for v in self.room_contents[rk]}) for rk in self.room_contents.keys()])),
+                    ))
     
 
 class RobotWorker( SearchProblem ):
@@ -73,6 +78,11 @@ class RobotWorker( SearchProblem ):
         for door in state.doors:
             if  door.locked==False and robot_location in door.goes_between:
                 actions.append( ("move to", door.other_loc[robot_location]) )
+            # If the door is locked, check if the robot has the key
+            if door.locked==True and robot_location in door.goes_between:
+                if door.doorkey in state.robot.carried_items:
+                    # If the robot has the key, it can move through the door
+                    actions.append( ("move to", door.other_loc[robot_location]) )
 
         # Now the actions list should contain all possible actions
         return actions
@@ -89,6 +99,12 @@ class RobotWorker( SearchProblem ):
             next_state.room_contents[state.robot.location].remove(target)
 
         if act == "move to":
+            robot_location = state.robot.location
+            for door in next_state.doors:
+                if robot_location in door.goes_between and target in door.goes_between:
+                    if door.locked == True:
+                        door.locked = False
+        
             next_state.robot.location = target
 
         return next_state

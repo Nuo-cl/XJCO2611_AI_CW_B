@@ -1,0 +1,121 @@
+{
+  "items": [
+    {
+      "id": 0,
+      "name": "Laptop",
+      "weight": 2.5
+    },
+    {
+      "id": 1,
+      "name": "Smartphone",
+      "weight": 0.2
+    },
+    {
+      "id": 2,
+      "name": "Headphones",
+      "weight": 0.1
+    },
+    {
+      "id": 3,
+      "name": "Water Bottle",
+      "weight": 1.2
+    },
+    {
+      "id": 4,
+      "name": "Key 1",
+      "weight": 0
+    }
+  ],
+  "cases": {
+    "case1": {
+      "room contents": {
+        "store room": [
+          0,
+          1
+        ],
+        "tool cupboard": [
+          2
+        ],
+        "workshop": [
+          3
+        ]
+      },
+      "doors": [
+        "store room",
+        "tool cupboard",
+        4,
+        true
+      ],
+      "robot": {
+        "carried_items": [
+          4
+        ],
+        "strength": 15,
+        "location": "store room"
+      },
+      "goal": {
+        "workshop": [
+          0,
+          1
+        ]
+      }
+    },
+    "case2": {
+      "room contents": {
+        "library": [],
+        "office": [
+          0,
+          1
+        ],
+        "kitchen": [
+          3
+        ]
+      },
+      "doors": [
+        "library",
+        "office",
+        null,
+        false
+      ],
+      "robot": {
+        "carried_items": [],
+        "strength": 10,
+        "location": "office"
+      },
+      "goal": {
+        "kitchen": [
+          0,
+          1
+        ],
+        "library": [
+          3
+        ]
+      }
+    },
+    "case3": {
+      "room contents": {
+        "room1": [
+          1,
+          2
+        ],
+        "room2": []
+      },
+      "doors": [
+        "room1",
+        "room2",
+        null,
+        false
+      ],
+      "robot": {
+        "carried_items": [],
+        "strength": 10,
+        "location": "room1"
+      },
+      "goal": {
+        "room2": [
+          1
+        ]
+      }
+    }
+  }
+}

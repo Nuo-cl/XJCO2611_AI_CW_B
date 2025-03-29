@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>机器人工人问题配置</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1, h2, h3 {
+            color: #333;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+        }
+        
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        input[type="text"], input[type="number"] {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+            margin-top: 20px;
+        }
+        
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            color: #333;
+        }
+        
+        .tab button:hover {
+            background-color: #ddd;
+        }
+        
+        .tab button.active {
+            background-color: #ccc;
+        }
+        
+        .tabcontent {
+            display: none;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-top: none;
+        }
+        
+        #items-section {
+            display: block;
+        }
+        
+        #item-form {
+            display: none;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+        
+        .room-card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #f9f9f9;
+        }
+        
+        .door-item {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #f9f9f9;
+        }
+        
+        .action-buttons {
+            margin-top: 15px;
+        }
+
+        /* 机器人设置样式 */
+        .robot-settings {
+            border: 1px solid #2196F3;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #e3f2fd;
+        }
+        
+        .robot-settings h3 {
+            color: #2196F3;
+            margin-top: 0;
+        }
+        
+        .carried-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px;
+            margin: 5px 0;
+            background-color: #f0f8ff;
+            border-radius: 3px;
+        }
+
+        /* 目标状态设置样式 */
+        .goal-settings {
+            border: 1px solid #FF9800;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #fff3e0;
+        }
+        
+        .goal-settings h3 {
+            color: #FF9800;
+            margin-top: 0;
+        }
+        
+        .goal-room {
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #ffecb3;
+            border-radius: 3px;
+        }
+        
+        .goal-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px;
+            margin: 5px 0;
+            background-color: #fff8e1;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>机器人工人问题配置</h1>
+        
+        <div class="tab">
+            <button class="tablinks active" onclick="openTab(event, 'items-section')">物品管理</button>
+            <button class="tablinks" onclick="openTab(event, 'scenes-section')">场景管理</button>
+        </div>
+        
+        <!-- 物品管理 -->
+        <div id="items-section" class="tabcontent" style="display: block;">
+            <h2>物品管理</h2>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>名称</th>
+                        <th>重量</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="items-body">
+                    <!-- 物品列表会通过JavaScript动态生成 -->
+                </tbody>
+            </table>
+            
+            <button onclick="addNewItem()">添加新物品</button>
+            
+            <div id="item-form">
+                <h3>添加/编辑物品</h3>
+                <input type="hidden" id="edit-item-id">
+                
+                <div class="form-group">
+                    <label for="item-name">物品名称:</label>
+                    <input type="text" id="item-name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="item-weight">重量:</label>
+                    <input type="number" id="item-weight" step="0.1" min="0" required>
+                </div>
+                
+                <div class="action-buttons">
+                    <button onclick="saveItem()">保存</button>
+                    <button onclick="cancelItemEdit()">取消</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 场景管理 -->
+        <div id="scenes-section" class="tabcontent">
+            <h2>场景管理</h2>
+            
+            <div class="form-group">
+                <label for="case-selector">选择场景:</label>
+                <select id="case-selector" onchange="loadCaseDetails()"></select>
+                <button onclick="addNewCase()">添加场景</button>
+                <button onclick="deleteCase()">删除场景</button>
+            </div>
+            
+            <div id="case-details">
+                <!-- 场景详细信息会通过JavaScript动态生成 -->
+            </div>
+            
+            <!-- 机器人设置部分 -->
+            <div class="robot-settings">
+                <h3>机器人设置</h3>
+                
+                <div class="form-group">
+                    <label for="robot-location">初始位置:</label>
+                    <select id="robot-location"></select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="robot-strength">力量值:</label>
+                    <input type="number" id="robot-strength" min="1" value="10">
+                </div>
+                
+                <div class="form-group">
+                    <label>携带物品:</label>
+                    <div id="carried-items-list"></div>
+                    <button onclick="addCarriedItem()">添加物品</button>
+                </div>
+            </div>
+            
+            
+            <h3>房间管理</h3>
+            <div id="rooms-container">
+                <!-- 房间列表会通过JavaScript动态生成 -->
+            </div>
+            <button onclick="addNewRoom()">添加房间</button>
+            
+            <h3>门连接管理</h3>
+            <div id="doors-container">
+                <!-- 门连接列表会通过JavaScript动态生成 -->
+            </div>
+            <button onclick="addNewDoor()">添加门</button>
+
+            <!-- 目标状态设置部分 -->
+            <div class="goal-settings">
+                <h3>目标状态设置</h3>
+                <p>设置搜索目标：指定每个房间应包含的物品</p>
+                
+                <div id="goal-rooms-container">
+                    <!-- 目标房间列表会通过JavaScript动态生成 -->
+                </div>
+                
+                <button onclick="addGoalRoom()">添加目标房间</button>
+            </div>
+            <div class="action-buttons">
+                <button onclick="saveCase()">保存场景</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html> 
