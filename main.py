@@ -4,7 +4,7 @@ import time
 import sys
 from classes import Robot, Door, State, RobotWorker, search, ITEM_NAME
 
-from heuristics import make_misplaced, make_carry_right_items, make_locked_doors
+from heuristics import make_misplaced, make_carry_right_items, make_locked_doors, make_combined_heuristic
 from costs import cost, cost_2
 
 # 搜索策略配置
@@ -16,9 +16,11 @@ def get_search_strategies(goal):
         {"name": "bestf", "mode": "BF/FIFO", "randomise": False, "heuristic": make_misplaced(goal), "heuristic_name": "misplaced", "cost_name": "无"},
         {"name": "bestf", "mode": "BF/FIFO", "randomise": False, "heuristic": make_carry_right_items(goal), "heuristic_name": "carry_right", "cost_name": "无"},
         {"name": "bestf", "mode": "BF/FIFO", "randomise": False, "heuristic": make_locked_doors(goal), "heuristic_name": "locked_doors", "cost_name": "无"},
+        {"name": "bestf", "mode": "BF/FIFO", "randomise": False, "heuristic": make_combined_heuristic(goal), "heuristic_name": "combined", "cost_name": "无"},
         {"name": "A*", "mode": "BF/FIFO", "randomise": False, "heuristic": make_misplaced(goal), "heuristic_name": "misplaced", "cost": cost, "cost_name": "cost"},
         {"name": "A*", "mode": "BF/FIFO", "randomise": False, "heuristic": make_carry_right_items(goal), "heuristic_name": "carry_right", "cost": cost, "cost_name": "cost"},
-        {"name": "A*", "mode": "BF/FIFO", "randomise": False, "heuristic": make_locked_doors(goal), "heuristic_name": "locked_doors", "cost": cost, "cost_name": "cost"}
+        {"name": "A*", "mode": "BF/FIFO", "randomise": False, "heuristic": make_locked_doors(goal), "heuristic_name": "locked_doors", "cost": cost, "cost_name": "cost"},
+        {"name": "A*", "mode": "BF/FIFO", "randomise": False, "heuristic": make_combined_heuristic(goal), "heuristic_name": "combined", "cost": cost, "cost_name": "cost"}
     ]
 
 # 重定向标准输出，以捕获搜索过程的输出
@@ -59,6 +61,8 @@ def run_tests():
     
     # 遍历每个测试案例
     for case_name, case_data in config_data['cases'].items():
+        if case_name not in test_cases:
+            continue
         result_file.write(f"案例: {case_name}\n")
         result_file.write("-"*50 + "\n")
         
@@ -167,4 +171,5 @@ def run_tests():
     print(f"\n所有测试完成，结果已保存到 {result_filename}")
 
 if __name__ == "__main__":
+    test_cases = ['sim_1', 'mid_1']
     run_tests() 

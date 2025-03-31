@@ -52,3 +52,13 @@ def make_locked_doors(goal):
     def locked_doors_with_goal(state):
         return locked_doors(state, goal)
     return locked_doors_with_goal
+
+def combined_heuristic(state, goal):
+    misplaced_count = misplaced(state, goal)
+    locked_doors_count = locked_doors(state)
+    return misplaced_count + locked_doors_count
+
+def make_combined_heuristic(goal):
+    def combined_heuristic_with_goal(state):
+        return combined_heuristic(state, goal)
+    return combined_heuristic_with_goal

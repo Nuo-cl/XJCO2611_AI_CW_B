@@ -44,6 +44,21 @@
       "id": 8,
       "name": "Television",
       "weight": 6
+    },
+    {
+      "id": 9,
+      "name": "Pen",
+      "weight": 0.2
+    },
+    {
+      "id": 10,
+      "name": "Pen",
+      "weight": 0.2
+    },
+    {
+      "id": 11,
+      "name": "Pen",
+      "weight": 0.2
     }
   ],
   "cases": {
@@ -98,6 +113,60 @@
         ],
         "room2": [
           8
+        ]
+      }
+    },
+    "mid_1": {
+      "room contents": {
+        "room1": [
+          3,
+          9,
+          10
+        ],
+        "room2": [
+          11
+        ],
+        "room3": [
+          4,
+          0
+        ],
+        "room4": [
+          5
+        ]
+      },
+      "doors": [
+        [
+          "room1",
+          "room2",
+          5,
+          true
+        ],
+        [
+          "room1",
+          "room3",
+          null,
+          false
+        ],
+        [
+          "room1",
+          "room4",
+          4,
+          true
+        ]
+      ],
+      "robot": {
+        "carried_items": [],
+        "strength": 10,
+        "location": "room1"
+      },
+      "goal": {
+        "room4": [
+          9,
+          10,
+          11
+        ],
+        "room2": [
+          0
         ]
       }
     }
