@@ -24,31 +24,80 @@
       "id": 4,
       "name": "Key 1",
       "weight": 0
+    },
+    {
+      "id": 5,
+      "name": "Key 2",
+      "weight": 0
+    },
+    {
+      "id": 6,
+      "name": "Key 3",
+      "weight": 0
+    },
+    {
+      "id": 7,
+      "name": "Book",
+      "weight": 2
+    },
+    {
+      "id": 8,
+      "name": "Television",
+      "weight": 6
     }
   ],
   "cases": {
-    "case3": {
+    "sim_1": {
       "room contents": {
         "room1": [
+          0,
           1,
-          2
+          8,
+          5
         ],
-        "room2": []
+        "room2": [
+          2,
+          3
+        ],
+        "room3": [
+          4
+        ],
+        "room4": []
       },
       "doors": [
-        "room1",
-        "room2",
-        null,
-        false
+        [
+          "room1",
+          "room4",
+          4,
+          true
+        ],
+        [
+          "room1",
+          "room2",
+          5,
+          true
+        ],
+        [
+          "room1",
+          "room3",
+          null,
+          false
+        ]
       ],
       "robot": {
         "carried_items": [],
-        "strength": 10,
+        "strength": 6,
         "location": "room1"
       },
       "goal": {
+        "room4": [
+          0
+        ],
+        "room3": [
+          2
+        ],
         "room2": [
-          1
+          8
         ]
       }
     }

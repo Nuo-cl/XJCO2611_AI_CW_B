@@ -428,9 +428,16 @@ function displayRooms(roomContents) {
         addItemButton.textContent = '添加物品';
         addItemButton.onclick = () => addItemToRoom(room);
         
+        const removeRoomButton = document.createElement('button');
+        removeRoomButton.textContent = '删除房间';
+        removeRoomButton.style.backgroundColor = '#ff4d4f';
+        removeRoomButton.style.marginLeft = '10px';
+        removeRoomButton.onclick = () => removeRoom(room);
+        
         roomCard.appendChild(roomHeader);
         roomCard.appendChild(itemsList);
         roomCard.appendChild(addItemButton);
+        roomCard.appendChild(removeRoomButton);
         
         roomsContainer.appendChild(roomCard);
     });
@@ -441,7 +448,22 @@ function displayDoors(doorData) {
     const doorsContainer = document.getElementById('doors-container');
     doorsContainer.innerHTML = '';
     
-    if (Array.isArray(doorData)) {
+    // 检查doors是否为数组
+    if (!Array.isArray(doorData)) {
+        return;
+    }
+    
+    // 检查是否有门
+    if (doorData.length === 0) {
+        doorsContainer.innerHTML = '<p>没有设置门连接</p>';
+        return;
+    }
+    
+    // 检查第一个元素是否为数组（旧格式兼容）
+    const isLegacyFormat = !Array.isArray(doorData[0]);
+    
+    if (isLegacyFormat) {
+        // 处理旧格式（单个门）
         const roomA = doorData[0];
         const roomB = doorData[1];
         const keyId = doorData[2];
@@ -458,9 +480,34 @@ function displayDoors(doorData) {
             <p>钥匙: ${keyName}</p>
             <p>状态: ${locked ? '已锁' : '未锁'}</p>
             <button onclick="editDoor(0)">编辑</button>
+            <button onclick="deleteDoor(0)" style="background-color: #ff4d4f; margin-left: 10px;">删除</button>
         `;
         
         doorsContainer.appendChild(doorItem);
+    } else {
+        // 处理新格式（多个门）
+        doorData.forEach((door, index) => {
+            const roomA = door[0];
+            const roomB = door[1];
+            const keyId = door[2];
+            const locked = door[3];
+            
+            const doorItem = document.createElement('div');
+            doorItem.className = 'door-item';
+            
+            const keyItem = configData.items.find(i => i.id === keyId);
+            const keyName = keyItem ? keyItem.name : '无钥匙';
+            
+            doorItem.innerHTML = `
+                <p>连接: ${roomA} - ${roomB}</p>
+                <p>钥匙: ${keyName}</p>
+                <p>状态: ${locked ? '已锁' : '未锁'}</p>
+                <button onclick="editDoor(${index})">编辑</button>
+                <button onclick="deleteDoor(${index})" style="background-color: #ff4d4f; margin-left: 10px;">删除</button>
+            `;
+            
+            doorsContainer.appendChild(doorItem);
+        });
     }
 }
 
@@ -649,8 +696,39 @@ function addNewDoor() {
             return;
         }
         
-        // 设置新门
-        configData.cases[caseKey].doors = [roomA, roomB, keyId, locked];
+        // 确保doors是数组
+        if (!Array.isArray(configData.cases[caseKey].doors)) {
+            configData.cases[caseKey].doors = [];
+        }
+        
+        // 检查这两个房间之间是否已经存在门
+        const doorExists = configData.cases[caseKey].doors.some(door => {
+            // 检查是否为老格式
+            if (!Array.isArray(door)) {
+                // 老格式，单个门，直接返回false让它添加新门
+                return false;
+            }
+            
+            return (door[0] === roomA && door[1] === roomB) || 
+                   (door[0] === roomB && door[1] === roomA);
+        });
+        
+        if (doorExists) {
+            alert('这两个房间之间已经存在门连接');
+            return;
+        }
+        
+        // 如果是老格式（不是数组的数组），将其转换为新格式
+        if (configData.cases[caseKey].doors.length > 0 && !Array.isArray(configData.cases[caseKey].doors[0])) {
+            // 保存旧格式的单门数据
+            const oldDoor = [...configData.cases[caseKey].doors];
+            // 转换为新格式
+            configData.cases[caseKey].doors = [oldDoor];
+        }
+        
+        // 添加新门
+        configData.cases[caseKey].doors.push([roomA, roomB, keyId, locked]);
+        
         saveConfigData();
         loadCaseDetails();
         doorForm.remove();
@@ -661,12 +739,32 @@ function addNewDoor() {
 function editDoor(index) {
     const caseKey = document.getElementById('case-selector').value;
     
-    if (!caseKey || !configData.cases[caseKey] || !configData.cases[caseKey].doors) {
-        alert('无效的场景或门数据');
+    if (!caseKey || !configData.cases[caseKey]) {
+        alert('无效的场景数据');
         return;
     }
     
-    const doorData = configData.cases[caseKey].doors;
+    if (!Array.isArray(configData.cases[caseKey].doors)) {
+        alert('无效的门数据');
+        return;
+    }
+    
+    let doorData;
+    
+    // 检查是否为旧格式
+    if (configData.cases[caseKey].doors.length > 0 && !Array.isArray(configData.cases[caseKey].doors[0])) {
+        // 旧格式，只有一个门
+        doorData = configData.cases[caseKey].doors;
+    } else {
+        // 新格式，多个门
+        doorData = configData.cases[caseKey].doors[index];
+    }
+    
+    if (!doorData) {
+        alert('无效的门数据');
+        return;
+    }
+    
     const roomContents = configData.cases[caseKey]['room contents'];
     const rooms = Object.keys(roomContents);
     
@@ -729,12 +827,62 @@ function editDoor(index) {
             return;
         }
         
+        // 检查这两个房间之间是否已经存在其他门
+        const doorExists = configData.cases[caseKey].doors.some((door, i) => {
+            // 跳过当前正在编辑的门
+            if (i === index) return false;
+            
+            // 检查是否为老格式
+            if (!Array.isArray(door)) {
+                return false;
+            }
+            
+            return (door[0] === roomA && door[1] === roomB) || 
+                   (door[0] === roomB && door[1] === roomA);
+        });
+        
+        if (doorExists) {
+            alert('这两个房间之间已经存在门连接');
+            return;
+        }
+        
         // 更新门
-        configData.cases[caseKey].doors = [roomA, roomB, keyId, locked];
+        if (configData.cases[caseKey].doors.length > 0 && !Array.isArray(configData.cases[caseKey].doors[0])) {
+            // 旧格式，直接更新
+            configData.cases[caseKey].doors = [roomA, roomB, keyId, locked];
+        } else {
+            // 新格式，更新对应索引
+            configData.cases[caseKey].doors[index] = [roomA, roomB, keyId, locked];
+        }
+        
         saveConfigData();
         loadCaseDetails();
         doorForm.remove();
     };
+}
+
+// 删除门
+function deleteDoor(index) {
+    const caseKey = document.getElementById('case-selector').value;
+    
+    if (!caseKey || !configData.cases[caseKey] || !configData.cases[caseKey].doors) {
+        alert('无效的场景或门数据');
+        return;
+    }
+    
+    if (confirm('确定要删除这个门连接吗？')) {
+        // 检查是否为旧格式
+        if (configData.cases[caseKey].doors.length > 0 && !Array.isArray(configData.cases[caseKey].doors[0])) {
+            // 旧格式，只有一个门，直接清空
+            configData.cases[caseKey].doors = [];
+        } else {
+            // 新格式，删除特定的门
+            configData.cases[caseKey].doors.splice(index, 1);
+        }
+        
+        saveConfigData();
+        loadCaseDetails();
+    }
 }
 
 // 显示目标状态设置
@@ -1012,7 +1160,7 @@ function addNewCase() {
             'room contents': {
                 'room1': []
             },
-            'doors': [],
+            'doors': [],  // 现在是门的数组，每个元素是一个门的数据
             'robot': {
                 'carried_items': [],
                 'strength': 10,
@@ -1146,4 +1294,58 @@ function openTab(evt, tabName) {
     // 显示当前标签内容并将按钮标记为活动状态
     document.getElementById(tabName).style.display = 'block';
     evt.currentTarget.className += ' active';
+}
+
+// 删除房间
+function removeRoom(room) {
+    const caseKey = document.getElementById('case-selector').value;
+    
+    if (!caseKey || !configData.cases[caseKey]) {
+        alert('请先选择一个场景');
+        return;
+    }
+    
+    // 检查房间数量
+    const roomCount = Object.keys(configData.cases[caseKey]['room contents']).length;
+    if (roomCount <= 1) {
+        alert('不能删除唯一的房间，场景至少需要保留一个房间');
+        return;
+    }
+    
+    if (confirm(`确定要删除房间 "${room}" 吗？这将移除该房间内的所有物品。`)) {
+        // 删除房间
+        delete configData.cases[caseKey]['room contents'][room];
+        
+        // 处理机器人位置
+        if (configData.cases[caseKey].robot && configData.cases[caseKey].robot.location === room) {
+            // 如果机器人在这个房间，将它移动到第一个可用的房间
+            const firstRoom = Object.keys(configData.cases[caseKey]['room contents'])[0];
+            configData.cases[caseKey].robot.location = firstRoom;
+        }
+        
+        // 处理目标状态
+        if (configData.cases[caseKey].goal && configData.cases[caseKey].goal[room]) {
+            delete configData.cases[caseKey].goal[room];
+        }
+        
+        // 处理门 - 移除所有连接到该房间的门
+        if (Array.isArray(configData.cases[caseKey].doors)) {
+            // 检查是否为旧格式
+            if (configData.cases[caseKey].doors.length > 0 && !Array.isArray(configData.cases[caseKey].doors[0])) {
+                // 旧格式，单个门
+                const doorData = configData.cases[caseKey].doors;
+                if (doorData[0] === room || doorData[1] === room) {
+                    configData.cases[caseKey].doors = [];
+                }
+            } else {
+                // 新格式，多个门
+                configData.cases[caseKey].doors = configData.cases[caseKey].doors.filter(door => 
+                    door[0] !== room && door[1] !== room
+                );
+            }
+        }
+        
+        saveConfigData();
+        loadCaseDetails();
+    }
 } 

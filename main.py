@@ -10,15 +10,15 @@ from costs import cost, cost_2
 # 搜索策略配置
 def get_search_strategies(goal):
     return [
-        {"name": "bfs\t\t", "mode": "BF/FIFO", "randomise": False, "heuristic_name": "\t\t无\t\t", "cost_name": "\t\t无\t\t"},
-        {"name": "dfs\t\t", "mode": "DF/LIFO", "randomise": False, "heuristic_name": "\t\t无\t\t", "cost_name": "\t\t无\t\t"},
-        {"name": "dfsr\t", "mode": "DF/LIFO", "randomise": True, "heuristic_name": "\t\t无\t\t", "cost_name": "\t\t无\t\t"},
-        {"name": "bestf\t", "mode": "BF/FIFO", "randomise": False, "heuristic": make_misplaced(goal), "heuristic_name": "misplaced\t", "cost_name": "\t\t无\t\t"},
-        {"name": "bestf\t", "mode": "BF/FIFO", "randomise": False, "heuristic": make_carry_right_items(goal), "heuristic_name": "carry_right  ", "cost_name": "\t\t无\t\t"},
-        {"name": "bestf\t", "mode": "BF/FIFO", "randomise": False, "heuristic": make_locked_doors(goal), "heuristic_name": "locked_doors ", "cost_name": "\t\t无\t\t"},
-        {"name": "A*算法 \t", "mode": "BF/FIFO", "randomise": False, "heuristic": make_misplaced(goal), "heuristic_name": "misplaced\t", "cost": cost, "cost_name": "\t\tcost\t"},
-        {"name": "A*算法 \t", "mode": "BF/FIFO", "randomise": False, "heuristic": make_carry_right_items(goal), "heuristic_name": "carry_right  ", "cost": cost, "cost_name": "\t\tcost\t"},
-        {"name": "A*算法 \t", "mode": "BF/FIFO", "randomise": False, "heuristic": make_locked_doors(goal), "heuristic_name": "locked_doors ", "cost": cost, "cost_name": "\t\tcost\t"}
+        {"name": "bfs", "mode": "BF/FIFO", "randomise": False, "heuristic_name": "无", "cost_name": "无"},
+        {"name": "dfs", "mode": "DF/LIFO", "randomise": False, "heuristic_name": "无", "cost_name": "无"},
+        {"name": "dfsr", "mode": "DF/LIFO", "randomise": True, "heuristic_name": "无", "cost_name": "无"},
+        {"name": "bestf", "mode": "BF/FIFO", "randomise": False, "heuristic": make_misplaced(goal), "heuristic_name": "misplaced", "cost_name": "无"},
+        {"name": "bestf", "mode": "BF/FIFO", "randomise": False, "heuristic": make_carry_right_items(goal), "heuristic_name": "carry_right", "cost_name": "无"},
+        {"name": "bestf", "mode": "BF/FIFO", "randomise": False, "heuristic": make_locked_doors(goal), "heuristic_name": "locked_doors", "cost_name": "无"},
+        {"name": "A*", "mode": "BF/FIFO", "randomise": False, "heuristic": make_misplaced(goal), "heuristic_name": "misplaced", "cost": cost, "cost_name": "cost"},
+        {"name": "A*", "mode": "BF/FIFO", "randomise": False, "heuristic": make_carry_right_items(goal), "heuristic_name": "carry_right", "cost": cost, "cost_name": "cost"},
+        {"name": "A*", "mode": "BF/FIFO", "randomise": False, "heuristic": make_locked_doors(goal), "heuristic_name": "locked_doors", "cost": cost, "cost_name": "cost"}
     ]
 
 # 重定向标准输出，以捕获搜索过程的输出
@@ -71,8 +71,9 @@ def run_tests():
         doors = []
         if case_data['doors']:
             # 门的格式为 [roomA, roomB, keyId, locked]
-            door_data = case_data['doors']
-            doors.append(Door(door_data[0], door_data[1], door_data[2], door_data[3]))
+            doors_data = case_data['doors']
+            for door_data in doors_data:
+                doors.append(Door(door_data[0], door_data[1], door_data[2], door_data[3]))
         
         # 创建机器人
         robot_data = case_data.get('robot', {'carried_items': [], 'strength': 10, 'location': list(room_contents.keys())[0]})
@@ -100,7 +101,7 @@ def run_tests():
         goal = goal_item_locations.copy()
         # 写入结果表头
         result_file.write("搜索结果:\n")
-        result_file.write("策略     |   启发式函数   |   成本函数    |       结果        |  耗时  | 已生成节点 | 已测试节点 | 已抛弃节点 | 剩余节点 | 解路径长度\n")
+        result_file.write("策略     |   启发式函数   |   成本函数    |       结果        |   耗时   | 已生成节点  | 已测试节点  | 已抛弃节点  | 剩余节点  | 解路径长度 \n")
         result_file.write("-"*140 + "\n")
         
         # 获取搜索策略列表
@@ -142,16 +143,16 @@ def run_tests():
             
             # 组装一行结果
             result_line = [
-                strategy['name'],
-                strategy['heuristic_name'],
-                strategy['cost_name'],
-                search_term_cond,
-                f"{search_stats['time_taken']:.4f}",
-                "\t\t"+str(search_stats['nodes_generated'])+"\t",
-                "\t\t"+str(search_stats['nodes_tested'])+"\t",
-                "\t\t"+str(search_stats['nodes_discarded'])+"\t",
-                "\t\t"+str(search_stats['nodes_left_in_queue'])+"\t",
-                str(search_result['result']['path_length'] if search_term_cond == "GOAL_STATE_FOUND" else "N/A")
+                f"{strategy['name']:<8}",
+                f"{strategy['heuristic_name']:<12}",
+                f"{strategy['cost_name']:<12}",
+                f"{search_term_cond:<16}",
+                f"{search_stats['time_taken']:>8.4f}",
+                f"{search_stats['nodes_generated']:>10}",
+                f"{search_stats['nodes_tested']:>10}",
+                f"{search_stats['nodes_discarded']:>10}",
+                f"{search_stats['nodes_left_in_queue']:>10}",
+                f"{search_result['result']['path_length'] if search_term_cond == 'GOAL_STATE_FOUND' else 'N/A':>10}"
             ]
             
             # 写入一行结果
