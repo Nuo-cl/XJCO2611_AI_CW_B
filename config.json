@@ -169,6 +169,71 @@
           0
         ]
       }
+    },
+    "sim_2": {
+      "room contents": {
+        "room1": [
+          0,
+          7
+        ],
+        "room2": [
+          9,
+          10,
+          4
+        ],
+        "room3": [
+          11
+        ],
+        "room4": []
+      },
+      "doors": [
+        [
+          "room1",
+          "room2",
+          null,
+          false
+        ],
+        [
+          "room3",
+          "room4",
+          null,
+          false
+        ],
+        [
+          "room2",
+          "room3",
+          null,
+          false
+        ],
+        [
+          "room1",
+          "room4",
+          null,
+          false
+        ],
+        [
+          "room1",
+          "room3",
+          null,
+          false
+        ]
+      ],
+      "robot": {
+        "carried_items": [],
+        "strength": 6,
+        "location": "room1"
+      },
+      "goal": {
+        "room1": [
+          9,
+          10,
+          11
+        ],
+        "room4": [
+          0,
+          7
+        ]
+      }
     }
   }
 }

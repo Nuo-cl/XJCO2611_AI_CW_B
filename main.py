@@ -20,11 +20,7 @@ def get_search_strategies(goal):
         {"name": "A*", "mode": "BF/FIFO", "randomise": False, "heuristic": make_misplaced(goal), "heuristic_name": "misplaced", "cost": cost, "cost_name": "cost"},
         {"name": "A*", "mode": "BF/FIFO", "randomise": False, "heuristic": make_carry_right_items(goal), "heuristic_name": "carry_right", "cost": cost, "cost_name": "cost"},
         {"name": "A*", "mode": "BF/FIFO", "randomise": False, "heuristic": make_misplaced_locked(goal), "heuristic_name": "mis_locked", "cost": cost, "cost_name": "cost"},
-        {"name": "A*", "mode": "BF/FIFO", "randomise": False, "heuristic": make_carry_locked(goal), "heuristic_name": "carry_locked", "cost": cost, "cost_name": "cost"},
-        {"name": "A*", "mode": "BF/FIFO", "randomise": False, "heuristic": make_misplaced(goal), "heuristic_name": "misplaced", "cost": cost_2, "cost_name": "cost_2"},
-        {"name": "A*", "mode": "BF/FIFO", "randomise": False, "heuristic": make_carry_right_items(goal), "heuristic_name": "carry_right", "cost": cost_2, "cost_name": "cost_2"},
-        {"name": "A*", "mode": "BF/FIFO", "randomise": False, "heuristic": make_misplaced_locked(goal), "heuristic_name": "mis_locked", "cost": cost_2, "cost_name": "cost_2"},
-        {"name": "A*", "mode": "BF/FIFO", "randomise": False, "heuristic": make_carry_locked(goal), "heuristic_name": "carry_locked", "cost": cost_2, "cost_name": "cost_2"},
+        {"name": "A*", "mode": "BF/FIFO", "randomise": False, "heuristic": make_carry_locked(goal), "heuristic_name": "carry_locked", "cost": cost, "cost_name": "cost"}
     ]
 
 # 重定向标准输出，以捕获搜索过程的输出
@@ -176,5 +172,5 @@ def run_tests():
     print(f"\n所有测试完成，结果已保存到 {result_filename}")
 
 if __name__ == "__main__":
-    test_cases = ['mid_1']
+    test_cases = ['sim_2']
     run_tests() 
