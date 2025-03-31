@@ -48,17 +48,22 @@ def locked_doors(state, goal=None):
             count += 1
     return count
 
-def make_locked_doors(goal):
-    def locked_doors_with_goal(state):
-        return locked_doors(state, goal)
-    return locked_doors_with_goal
-
-def combined_heuristic(state, goal):
+def misplaced_locked(state, goal):
     misplaced_count = misplaced(state, goal)
     locked_doors_count = locked_doors(state)
     return misplaced_count + locked_doors_count
 
-def make_combined_heuristic(goal):
-    def combined_heuristic_with_goal(state):
-        return combined_heuristic(state, goal)
-    return combined_heuristic_with_goal
+def make_misplaced_locked(goal):
+    def misplaced_locked_with_goal(state):
+        return misplaced_locked(state, goal)
+    return misplaced_locked_with_goal
+
+def carry_locked(state, goal):
+    carry_count = carry_right_items(state, goal)
+    locked_count = locked_doors(state)
+    return carry_count + 2 *locked_count
+
+def make_carry_locked(goal):
+    def carry_locked_with_goal(state):
+        return carry_locked(state, goal)
+    return carry_locked_with_goal

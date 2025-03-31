@@ -352,6 +352,7 @@ def search( problem,
             show_state_path  = False,
             dots             = True,
             return_info      = False,
+            max_time         = 300,
             #One could potentially define other node limits
             #max_generated    = False,
             #max_discarded    = False 
@@ -364,6 +365,7 @@ def search( problem,
     heuristic_name = (heuristic.__name__ if heuristic else None)
     print( f"Strategy: mode={mode}, cost={cost_name}, heuristic={heuristic_name}")
     print( f"Max search nodes: {max_nodes}  (max number added to queue)" ) 
+    print( f"Max time limit: {max_time} seconds" )
     
     start_time = time.perf_counter()
     queue = SearchQueue(mode,cost,heuristic)
@@ -385,6 +387,11 @@ def search( problem,
         print( "Search started (progress dot output off)", flush=True)
     
     while True:
+        # 检查是否超时
+        if time.perf_counter() - start_time > max_time:
+            termination_condition = "TIME_LIMIT_EXCEEDED"
+            break
+            
         if queue.empty():
             termination_condition = "SEARCH-SPACE_EXHAUSTED"  # Means there is no solution.
             break
@@ -460,6 +467,11 @@ def search( problem,
         
     if termination_condition == "NODE_LIMIT_EXCEEDED":
         print( f"\n!! Search node limit ({max_nodes}) reached !!")
+        print("): No solution found :(\n")
+        goal_state=path=path_length=None
+        
+    if termination_condition == "TIME_LIMIT_EXCEEDED":
+        print( f"\n!! Time limit ({max_time} seconds) exceeded !!")
         print("): No solution found :(\n")
         goal_state=path=path_length=None
 
