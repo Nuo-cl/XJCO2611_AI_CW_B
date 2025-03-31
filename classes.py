@@ -66,7 +66,8 @@ class RobotWorker( SearchProblem ):
         actions = []
         # Can put down any carried item
         for i in state.robot.carried_items:
-            actions.append( ("put down", i) )
+            if strength >= weight_carried - ITEM_WEIGHT[i]:
+                actions.append( ("put down", i) )
 
         # Can pick up any item in room if strong enough
         for i in state.room_contents[robot_location]:

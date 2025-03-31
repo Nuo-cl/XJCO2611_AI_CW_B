@@ -135,7 +135,7 @@ def run_tests():
                 return_info=True,
                 heuristic=strategy['heuristic'] if 'heuristic' in strategy else None,
                 cost=strategy['cost'] if 'cost' in strategy else None,
-                max_time=30
+                max_time=300
             )
             end_time = time.time()
             
@@ -172,5 +172,5 @@ def run_tests():
     print(f"\n所有测试完成，结果已保存到 {result_filename}")
 
 if __name__ == "__main__":
-    test_cases = ['sim_2']
+    test_cases = ['hard_1']
     run_tests() 

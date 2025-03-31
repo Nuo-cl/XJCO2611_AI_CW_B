@@ -59,6 +59,11 @@
       "id": 11,
       "name": "Pen",
       "weight": 0.2
+    },
+    {
+      "id": 12,
+      "name": "Toolkit",
+      "weight": 3
     }
   ],
   "cases": {
@@ -232,6 +237,61 @@
         "room4": [
           0,
           7
+        ]
+      }
+    },
+    "hard_1": {
+      "room contents": {
+        "room1": [
+          8,
+          7
+        ],
+        "room2": [
+          12,
+          4,
+          1
+        ],
+        "room3": [
+          0,
+          5
+        ],
+        "room4": [
+          3
+        ]
+      },
+      "doors": [
+        [
+          "room1",
+          "room2",
+          null,
+          false
+        ],
+        [
+          "room1",
+          "room3",
+          4,
+          true
+        ],
+        [
+          "room2",
+          "room4",
+          5,
+          true
+        ]
+      ],
+      "robot": {
+        "carried_items": [],
+        "strength": 6,
+        "location": "room1"
+      },
+      "goal": {
+        "room4": [
+          8,
+          0
+        ],
+        "room1": [
+          3,
+          1
         ]
       }
     }
