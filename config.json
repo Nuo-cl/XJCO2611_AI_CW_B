@@ -64,6 +64,11 @@
       "id": 12,
       "name": "Toolkit",
       "weight": 3
+    },
+    {
+      "id": 13,
+      "name": "Battery",
+      "weight": 0
     }
   ],
   "cases": {
@@ -118,6 +123,61 @@
         ],
         "room2": [
           8
+        ]
+      }
+    },
+    "battery_test": {
+      "room contents": {
+        "room1": [
+          0,
+          1
+        ],
+        "room2": [
+          2,
+          3,
+          13
+        ],
+        "room3": [
+          4,
+          8
+        ],
+        "room4": [
+          7
+        ]
+      },
+      "doors": [
+        [
+          "room1",
+          "room2",
+          null,
+          false
+        ],
+        [
+          "room2",
+          "room3",
+          null,
+          false
+        ],
+        [
+          "room3",
+          "room4",
+          4,
+          true
+        ]
+      ],
+      "robot": {
+        "carried_items": [],
+        "strength": 3,
+        "location": "room1"
+      },
+      "goal": {
+        "room4": [
+          0,
+          8
+        ],
+        "room1": [
+          3,
+          7
         ]
       }
     },
@@ -256,7 +316,8 @@
           5
         ],
         "room4": [
-          3
+          3,
+          13
         ]
       },
       "doors": [
